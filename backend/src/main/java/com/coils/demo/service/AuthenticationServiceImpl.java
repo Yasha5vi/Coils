@@ -59,9 +59,18 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         profile.setUser(user);
         user.setProfile(profile);
+        
+        String requestedRole = request.getRole();
+        if (requestedRole == null || requestedRole.isBlank()) {
+            throw new IllegalArgumentException("Role is required");
+        }
+        requestedRole = requestedRole.toUpperCase(Locale.ROOT);
 
+        if (!requestedRole.equals("MEMBER") && !requestedRole.equals("RECRUITER")) {
+            throw new IllegalArgumentException("Invalid role. Allowed: MEMBER, RECRUITER");
+        }
         List<String> requestRoles = new ArrayList<>();
-        requestRoles.add("MEMBER");
+        requestRoles.add(requestedRole);
 
         List<Roles> roles = new ArrayList<>();
         for(String roleName: requestRoles){
