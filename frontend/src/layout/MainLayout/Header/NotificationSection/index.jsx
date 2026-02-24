@@ -52,7 +52,7 @@ export default function NotificationPopper() {
       const res = await api.post('/coils/fetch', {
         ...profile
       });
-
+      console.log(profile);
       if (res.status !== 200) {
         showNotification('error', 'Error fetching data');
         return;
