@@ -37,20 +37,30 @@ export default function Dashboard() {
 
 
   const gfgSolved = gfg?.solvedStats || {};
-  const lcSolved = lc?.submissions || {};
+const lcSolved = lc?.submissions || {};
 
-  const basic = gfgSolved?.Basic || 0;
-  const easy = (gfgSolved?.Easy || 0) + (lcSolved?.Easy || 0);
-  const medium = (gfgSolved?.Medium || 0) + (lcSolved?.Medium || 0);
-  const hard = (gfgSolved?.Hard || 0) + (lcSolved?.Hard || 0); 
+// Support both fetched shape and manual shape
+const lcEasy = lc?.easySolved ?? lcSolved?.Easy ?? 0;
+const lcMedium = lc?.mediumSolved ?? lcSolved?.Medium ?? 0;
+const lcHard = lc?.hardSolved ?? lcSolved?.Hard ?? 0;
+
+const gfgBasic = gfgSolved?.Basic ?? 0;
+const gfgEasy = gfgSolved?.Easy ?? 0;
+const gfgMedium = gfgSolved?.Medium ?? 0;
+const gfgHard = gfgSolved?.Hard ?? 0;
+
+const basic = gfgBasic;
+const easy = gfgEasy + lcEasy;
+const medium = gfgMedium + lcMedium;
+const hard = gfgHard + lcHard;
+ 
 
   const total = basic + easy + medium + hard;
 
-  const ccRating = cc?.maxRank ?? "-";
-  const cfCurRating = cf?.rating ?? "-";
-  const cfMaxRating = cf?.maxRating ?? "-";
+  const ccRating = cc?.rating ?? cc?.maxRank ?? "-";
+const cfCurRating = cf?.rating ?? "-";
+let lcRating = lc?.contestBadge ?? lc?.totalSolved ?? "-";
 
-  let lcRating = lc?.contestBadge ?? "-";
   if (lcRating === null) {
     lcRating = "< 1850";
   }

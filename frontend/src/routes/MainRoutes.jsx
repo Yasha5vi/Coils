@@ -3,6 +3,7 @@ import Loadable from 'ui-component/Loadable';
 import MainLayout from 'layout/MainLayout';
 import ProtectedRoute from './ProtectedRoute';
 import { Navigate } from 'react-router';
+import { useAuth } from 'contexts/AuthContext';
 
 const DashboardDefault = Loadable(lazy(() => import('views/dashboard/Default')));
 const About = Loadable(lazy(() => import('views/about')));
@@ -12,6 +13,14 @@ const Settings = Loadable(lazy(() => import('views/settings')));
 const SocialProfile = Loadable(lazy(() => import('views/social-profile')));
 const Projects = Loadable(lazy(() => import('views/projects')));
 const Timeline = Loadable(lazy(() => import('views/timeline')));
+const HrDashboard = Loadable(lazy(() => import('views/hr/Dashboard')));
+const HrJobs = Loadable(lazy(() => import('views/hr/Dashboard/jobs')));
+const HrMatches = Loadable(lazy(() => import('views/hr/Dashboard/matches')));
+
+
+
+
+
 
 const MainRoutes = {
   path: '/',
@@ -22,9 +31,10 @@ const MainRoutes = {
   ),
   children: [
     {
-      index: true,
-      element: <Navigate to="dashboard/default" replace />
-    },
+  index: true,
+  element: <RoleHomeRedirect />
+}
+,
     {
       path: 'dashboard/default',
       element: <DashboardDefault />
@@ -52,8 +62,28 @@ const MainRoutes = {
     {
       path: 'socialProfile',
       element: <SocialProfile />
+    },
+    {
+      path: 'hr/dashboard',
+      element: <HrDashboard />
+    },
+    {
+      path: 'hr/jobs',
+      element: <HrJobs />
+    },
+    {
+      path: 'hr/matches',
+      element: <HrMatches />
     }
+
+
+
+
   ]
 };
-
+function RoleHomeRedirect() {
+  const { roles } = useAuth();
+  const isRecruiter = (roles || []).some((r) => String(r).toUpperCase().includes('RECRUITER'));
+  return <Navigate to={isRecruiter ? '/hr/dashboard' : '/dashboard/default'} replace />;
+}
 export default MainRoutes;

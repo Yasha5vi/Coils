@@ -62,7 +62,10 @@ export default function UpgradePlanCard() {
             <Stack direction="row">
               <AnimateButton>
                 <Button variant="contained" color="warning" sx={{ boxShadow: 'none' }}>
-                  {roles.length > 1 ? 'Admin' : 'Member'}
+                  {roles?.some((r) => String(r).toUpperCase().includes('RECRUITER'))
+                    ? 'Recruiter'
+                    : 'Member'}
+
                 </Button>
               </AnimateButton>
             </Stack>

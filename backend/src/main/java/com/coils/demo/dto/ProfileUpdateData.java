@@ -3,6 +3,8 @@ package com.coils.demo.dto;
 import com.coils.demo.entity.Achievements;
 import com.coils.demo.entity.Journey;
 import com.coils.demo.entity.Projects;
+import com.fasterxml.jackson.databind.JsonNode;
+
 
 import java.util.List;
 
@@ -23,6 +25,8 @@ public class ProfileUpdateData {
     private String leetcodeHandle;
     private String coilsHandle;
     private List<Achievements> achievements;
+    private JsonNode platformDataJson;
+
 
     private List<Projects> projects;
 
@@ -212,6 +216,14 @@ public class ProfileUpdateData {
     public void setJourney(List<Journey> journey) {
         this.journey = journey;
     }
+    public JsonNode getPlatformDataJson() {
+    return platformDataJson;
+}
+
+public void setPlatformDataJson(JsonNode platformDataJson) {
+    this.platformDataJson = platformDataJson;
+}
+
 
     @Override
     public String toString() {

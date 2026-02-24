@@ -45,10 +45,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         // Step 2: Check header starts with prefix like "Bearer "
         if (authHeader != null && authHeader.startsWith(jwtProperties.getPrefix())) {
             jwtToken = authHeader.substring(jwtProperties.getPrefix().length()).trim();
-            try{
-                username = jwtUtil.extractUsername(jwtToken);
-            }catch(Exception e) {
-                throw new RuntimeException(e.getMessage());
+
+            // If token is missing after "Bearer", ignore and continue unauthenticated
+            if (!jwtToken.isBlank()) {
+                try {
+                    username = jwtUtil.extractUsername(jwtToken);
+                } catch (Exception e) {
+                    // Invalid token: do not crash filter chain, just ignore auth
+                    username = null;
+                }
             }
         }
 

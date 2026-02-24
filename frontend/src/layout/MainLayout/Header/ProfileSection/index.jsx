@@ -83,9 +83,9 @@ export default function ProfileSection() {
     prevOpen.current = open;
   }, [open]);
 
-  useEffect(()=>{
-    navigate('/', { replace: true }); 
-  },[isAuthenticated,navigate])
+  // useEffect(()=>{
+  //   navigate('/', { replace: true }); 
+  // },[isAuthenticated,navigate])
 
   return (
     <>
