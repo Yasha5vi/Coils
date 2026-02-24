@@ -38,7 +38,8 @@ export default function AuthLogin() {
   const [password,setPassword] = useState('');
   const [showError,setShowError] = useState(false);
   const [errorMessage,setErrorMessage] = useState('');
-  const { login,isAuthenticated,user } = useAuth();
+  const { login, isAuthenticated, roles } = useAuth();
+
 
   const [showPassword, setShowPassword] = useState(false);
 
@@ -71,10 +72,22 @@ export default function AuthLogin() {
  
       const token = response?.data?.token;
       const fetchedProfile = response?.data?.profile;
-      if(token){
+      if (token) {
         setProfile(fetchedProfile);
-        login(token,fetchedProfile);
-      }else{
+        login(token, fetchedProfile);
+
+        const payload = JSON.parse(atob(token.split('.')[1]));
+const roleList = Array.isArray(payload?.roles) ? payload.roles : [payload?.roles];
+const isRecruiter = roleList.some((r) => String(r || '').toUpperCase().includes('RECRUITER'));
+
+if (isRecruiter) {
+  navigate('/hr/dashboard', { replace: true });
+} else {
+  navigate('/dashboard/default', { replace: true });
+}
+
+      }
+else{
         setShowError(true);
         setErrorMessage("Invalid response from server");
         setTimeout(() =>{
@@ -98,11 +111,16 @@ export default function AuthLogin() {
     }
   }
 
-  useEffect(() => {
-    if (isAuthenticated) {
-      navigate('/', { replace: true }); 
-    }
-  }, [isAuthenticated, navigate]);
+//   useEffect(() => {
+//   if (isAuthenticated) {
+//     if (roles?.includes('RECRUITER')) {
+//       navigate('/hr/dashboard', { replace: true });
+//     } else {
+//       navigate('/dashboard/default', { replace: true });
+//     }
+//   }
+// }, [isAuthenticated, roles, navigate]);
+
 
   return (
     <>

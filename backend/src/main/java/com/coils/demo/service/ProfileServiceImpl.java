@@ -55,6 +55,8 @@ public class ProfileServiceImpl implements ProfileService{
         if (dto.getGithub() != null)      profile.setGithub(dto.getGithub());
 
         // Because User.profile has cascade = CascadeType.ALL, saving user persists profile changes.
+        if (dto.getPlatformDataJson() != null) profile.setPlatformDataJson(dto.getPlatformDataJson());
+
         userRepository.save(user);
 
         return profile;
