@@ -9,6 +9,8 @@ import com.coils.demo.service.HrJobService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import com.coils.demo.dto.HrJobDetailView;
+
 
 import java.util.List;
 
@@ -33,16 +35,26 @@ public class HrJobController {
         return ResponseEntity.ok(hrJobService.getMyJobs(authentication.getName()));
     }
 
-    @PostMapping("/{jobId}/score")
-    public ResponseEntity<CandidateMatchScore> upsertCandidateScore(Authentication authentication,
-                                                                    @PathVariable Long jobId,
-                                                                    @RequestBody HrScoreRequest request) {
-        return ResponseEntity.ok(hrJobService.upsertCandidateScore(authentication.getName(), jobId, request));
-    }
+    @PostMapping("/{jobId}/auto-score")
+public ResponseEntity<List<HrCandidateScoreView>> autoScore(Authentication authentication,
+                                                            @PathVariable Long jobId) {
+    return ResponseEntity.ok(hrJobService.autoScoreCandidates(authentication.getName(), jobId));
+}
+
 
     @GetMapping("/{jobId}/matches")
     public ResponseEntity<List<HrCandidateScoreView>> getRankedCandidates(Authentication authentication,
                                                                           @PathVariable Long jobId) {
         return ResponseEntity.ok(hrJobService.getRankedCandidates(authentication.getName(), jobId));
     }
+
+@PostMapping("/{jobId}/close")
+public ResponseEntity<JobDescription> closeJob(Authentication authentication, @PathVariable Long jobId) {
+    return ResponseEntity.ok(hrJobService.closeJob(authentication.getName(), jobId));
+}
+@GetMapping("/{jobId}")
+public ResponseEntity<HrJobDetailView> getJobById(Authentication authentication, @PathVariable Long jobId) {
+    return ResponseEntity.ok(hrJobService.getMyJobDetailById(authentication.getName(), jobId));
+}
+
 }
