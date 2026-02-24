@@ -14,6 +14,9 @@ import InputLabel from '@mui/material/InputLabel';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
+import MenuItem from '@mui/material/MenuItem';
+import Select from '@mui/material/Select';
+
 
 // project imports
 import AnimateButton from 'ui-component/extended/AnimateButton';
@@ -30,7 +33,7 @@ import { useUserProfile } from '../../../contexts/UserProfileContext';
 
 export default function AuthRegister() {
   const theme = useTheme();
-  const {login,isAuthenticated} = useAuth();
+  const { login, isAuthenticated, roles } = useAuth();
   const navigate = useNavigate();
 
   const [email, setFormEmail] = useState('');
@@ -41,6 +44,8 @@ export default function AuthRegister() {
 
   const [showPassword, setShowPassword] = useState(false);
   const [checked, setChecked] = useState(true);
+  const [role, setRole] = useState('');
+
 
   const { setProfile } = useUserProfile();
 
@@ -54,7 +59,7 @@ export default function AuthRegister() {
 
   const handleRegister = async ()=>{
 
-    if(username.length == 0 || password.length == 0 || email.length == 0){
+    if (username.length === 0 || password.length === 0 || email.length === 0 || role.length === 0){
       setShowError(true);
       setErrorMessage('Fields can not be empty');
       setTimeout(()=>{
@@ -80,14 +85,26 @@ export default function AuthRegister() {
       const response = await api.post("/auth/register",{
         email,
         username,
-        password
+        password,
+        role
       })
       const token = response?.data?.token;
       const fetchedProfile = response?.data?.profile;
-      if(token){
-        setProfile(fetchedProfile);
-        login(token,fetchedProfile);
-      }else{
+      if (token) {
+      setProfile(fetchedProfile);
+      login(token, fetchedProfile);
+
+      const payload = JSON.parse(atob(token.split('.')[1]));
+const roleList = Array.isArray(payload?.roles) ? payload.roles : [payload?.roles];
+const isRecruiter = roleList.some((r) => String(r || '').toUpperCase().includes('RECRUITER'));
+
+if (isRecruiter) {
+  navigate('/hr/dashboard', { replace: true });
+} else {
+  navigate('/dashboard/default', { replace: true });
+}
+      }
+else{
         setShowError(true);
         setErrorMessage("Invalid response from server");
         setTimeout(() =>{
@@ -109,11 +126,16 @@ export default function AuthRegister() {
     }
   };
 
-  useEffect(()=>{
-    if (isAuthenticated) {
-      navigate('/', { replace: true }); 
-    }
-  },[navigate,isAuthenticated])
+//   useEffect(() => {
+//   if (isAuthenticated) {
+//     if (roles?.includes('RECRUITER')) {
+//       navigate('/hr/dashboard', { replace: true });
+//     } else {
+//       navigate('/dashboard/default', { replace: true });
+//     }
+//   }
+// }, [navigate, isAuthenticated, roles]);
+
 
   return (
     <>
@@ -154,6 +176,22 @@ export default function AuthRegister() {
           inputProps={{}}
         />
       </FormControl>
+      
+      <FormControl fullWidth sx={{ mt: 1, mb: 1 }}>
+      <InputLabel id="role-select-label">Role</InputLabel>
+      <Select
+        labelId="role-select-label"
+        id="role-select"
+        value={role}
+        label="Role"
+        onChange={(event) => setRole(event.target.value)}
+      >
+        <MenuItem value="MEMBER">Member</MenuItem>
+        <MenuItem value="RECRUITER">Recruiter</MenuItem>
+      </Select>
+    </FormControl>
+
+
 
       <FormControl fullWidth sx={{ ...theme.typography.customInput }}>
         <InputLabel htmlFor="outlined-adornment-password-register">Password</InputLabel>
