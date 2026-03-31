@@ -17,12 +17,16 @@ import com.coils.demo.dto.hrai.AiScoreBatchResponse;
 import com.coils.demo.dto.hrai.AiScoreResult;
 import com.coils.demo.entity.Profile;
 import com.coils.demo.dto.HrJobDetailView;
+import com.coils.demo.service.ResumeEnhancerService;
 
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.stream.Collectors;
+import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 
 
 import java.util.List;
@@ -34,16 +38,19 @@ public class HrJobServiceImpl implements HrJobService {
     private final CandidateMatchScoreRepository candidateMatchScoreRepository;
     private final UserRepository userRepository;
     private final AiScoringClient aiScoringClient;
+    private final ResumeEnhancerService resumeEnhancerService;
 
 
     public HrJobServiceImpl(JobDescriptionRepository jobDescriptionRepository,
                         CandidateMatchScoreRepository candidateMatchScoreRepository,
                         UserRepository userRepository,
-                        AiScoringClient aiScoringClient) {
+                        AiScoringClient aiScoringClient,
+                        ResumeEnhancerService resumeEnhancerService) {
     this.jobDescriptionRepository = jobDescriptionRepository;
     this.candidateMatchScoreRepository = candidateMatchScoreRepository;
     this.userRepository = userRepository;
     this.aiScoringClient = aiScoringClient;
+    this.resumeEnhancerService = resumeEnhancerService;
 }
 
 
@@ -198,6 +205,19 @@ return c;
         User candidate = userRepository.findById(r.getCandidateUserId())
                 .orElseThrow(() -> new RuntimeException("Candidate user not found"));
 
+        Profile p = candidate.getProfile();
+
+        Map<String, Object> profileMap = new HashMap<>();
+        profileMap.put("headline", p != null ? p.getHeadline() : "");
+        profileMap.put("summary", p != null ? p.getSummary() : "");
+        profileMap.put("skills", p != null ? p.getSkills() : "");
+        profileMap.put("resumeText", p != null ? p.getExperience() : "");
+        profileMap.put("email", candidate.getEmail());
+        profileMap.put("phone", "");
+
+        Map<String, Object> yourModelResult =
+                resumeEnhancerService.analyze(profileMap);
+
         CandidateMatchScore cms = candidateMatchScoreRepository
                 .findByJobDescriptionIdAndCandidateUserId(jobId, r.getCandidateUserId())
                 .orElseGet(CandidateMatchScore::new);
@@ -206,7 +226,15 @@ return c;
         cms.setCandidateUser(candidate);
         cms.setScore(r.getScore());
         cms.setMatchedSkills(r.getMatchedSkills() == null ? "" : String.join(", ", r.getMatchedSkills()));
-        cms.setRemarks(r.getRemarks());
+        cms.setRemarks(
+            (r.getRemarks() != null ? r.getRemarks() : "") +
+            " | Suggestions: " +
+            ((List<Map<String, Object>>) yourModelResult.get("suggestions"))
+            .stream()
+            .map(s -> s.get("label"))
+            .toList()
+        );
+
 
         candidateMatchScoreRepository.save(cms);
     }
