@@ -7,10 +7,13 @@ import com.coils.demo.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.coils.demo.service.ResumeEnhancerService;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
@@ -18,6 +21,14 @@ public class ProfileController {
 
     private final ProfileService profileService;
     private final UserService userService;
+
+    @Autowired
+    private ResumeEnhancerService resumeEnhancerService;
+
+    public ProfileController(ProfileService profileService, UserService userService) {
+        this.profileService = profileService;
+        this.userService = userService;
+    }
 
     public ProfileController(ProfileService profileService, UserService userService){
         this.profileService = profileService;
@@ -126,5 +137,11 @@ public class ProfileController {
                     .body(null);
         }
     }
+    @PostMapping("/analyze")
+    public Map<String, Object> analyze(@RequestBody Map<String, Object> profile) {
+        return resumeEnhancerService.analyze(profile);
+    }
+
+    
 
 }
