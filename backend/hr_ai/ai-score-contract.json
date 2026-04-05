@@ -1,0 +1,44 @@
+{
+  "request": {
+    "job": {
+      "jobId": 101,
+      "title": "Backend Engineer",
+      "description": "Java, Spring Boot, PostgreSQL, Docker",
+      "requiredSkills": ["Java", "Spring Boot", "PostgreSQL", "Docker"],
+      "minExperienceYears": 2,
+      "location": "Bangalore",
+      "experienceLevel": "mid",
+      "minCfRating": 1200,
+      "minLcProblems": 150
+    },
+    "candidates": [
+      {
+        "candidateUserId": 12,
+        "username": "cand1",
+        "email": "cand1@example.com",
+        "skills": ["Java", "Spring Boot", "AWS"],
+        "experienceYears": 3,
+        "cfRating": 1450,
+        "lcTotal": 220,
+        "lcEasy": 100,
+        "lcMedium": 90,
+        "lcHard": 30,
+        "ccStars": 4,
+        "gfgTotal": 120,
+        "projects": 3,
+        "achievements": 1
+      }
+    ]
+  },
+  "response": {
+    "jobId": 101,
+    "results": [
+      {
+        "candidateUserId": 12,
+        "score": 82.4,
+        "matchedSkills": ["Java", "Spring Boot"],
+        "remarks": "Strong backend fit; good CP stats"
+      }
+    ]
+  }
+}
