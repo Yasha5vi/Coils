@@ -24,10 +24,6 @@ public class ProfileController {
 
     @Autowired
     private CandidateAIService candidateAIService;
-    public ProfileController(ProfileService profileService, UserService userService) {
-        this.profileService = profileService;
-        this.userService = userService;
-    }
 
     public ProfileController(ProfileService profileService, UserService userService){
         this.profileService = profileService;
