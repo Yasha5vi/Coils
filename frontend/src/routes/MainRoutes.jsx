@@ -4,6 +4,7 @@ import MainLayout from 'layout/MainLayout';
 import ProtectedRoute from './ProtectedRoute';
 import { Navigate } from 'react-router';
 import { useAuth } from 'contexts/AuthContext';
+import Enhance from 'views/Enhance';
 
 const DashboardDefault = Loadable(lazy(() => import('views/dashboard/Default')));
 const About = Loadable(lazy(() => import('views/about')));
@@ -50,6 +51,10 @@ const MainRoutes = {
     {
       path: 'timeline',
       element: <Timeline />
+    },
+    {
+      path: '/enhance',
+      element: <Enhance />
     },
     {
       path: 'about',
