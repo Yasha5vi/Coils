@@ -7,7 +7,7 @@ import com.coils.demo.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import com.coils.demo.service.ResumeEnhancerService;
+import com.coils.demo.service.CandidateAIService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
@@ -23,8 +23,7 @@ public class ProfileController {
     private final UserService userService;
 
     @Autowired
-    private ResumeEnhancerService resumeEnhancerService;
-
+    private CandidateAIService candidateAIService;
     public ProfileController(ProfileService profileService, UserService userService) {
         this.profileService = profileService;
         this.userService = userService;
@@ -139,8 +138,8 @@ public class ProfileController {
     }
     @PostMapping("/analyze")
     public Map<String, Object> analyze(@RequestBody Map<String, Object> profile) {
-        return resumeEnhancerService.analyze(profile);
-    }
+    return candidateAIService.analyze(profile);
+}
 
     
 
