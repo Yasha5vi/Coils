@@ -34,6 +34,13 @@ const utilities = {
       breadcrumbs: false
     },
     {
+    id: 'enhance',
+    title: 'Enhance Resume',
+    type: 'item',
+    url: '/enhance',
+    icon: icons.IconSparkles
+    },
+    {
       id: 'util-shadow',
       title: 'About',
       type: 'item',
