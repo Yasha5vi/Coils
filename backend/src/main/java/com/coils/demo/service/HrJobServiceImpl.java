@@ -17,7 +17,7 @@ import com.coils.demo.dto.hrai.AiScoreBatchResponse;
 import com.coils.demo.dto.hrai.AiScoreResult;
 import com.coils.demo.entity.Profile;
 import com.coils.demo.dto.HrJobDetailView;
-import com.coils.demo.service.ResumeEnhancerService;
+import com.coils.demo.service.CandidateAIService;
 
 
 import java.util.ArrayList;
@@ -38,19 +38,19 @@ public class HrJobServiceImpl implements HrJobService {
     private final CandidateMatchScoreRepository candidateMatchScoreRepository;
     private final UserRepository userRepository;
     private final AiScoringClient aiScoringClient;
-    private final ResumeEnhancerService resumeEnhancerService;
+    private final CandidateAIService candidateAIService;
 
 
     public HrJobServiceImpl(JobDescriptionRepository jobDescriptionRepository,
                         CandidateMatchScoreRepository candidateMatchScoreRepository,
                         UserRepository userRepository,
                         AiScoringClient aiScoringClient,
-                        ResumeEnhancerService resumeEnhancerService) {
+                        CandidateAIService candidateAIService) {
     this.jobDescriptionRepository = jobDescriptionRepository;
     this.candidateMatchScoreRepository = candidateMatchScoreRepository;
     this.userRepository = userRepository;
     this.aiScoringClient = aiScoringClient;
-    this.resumeEnhancerService = resumeEnhancerService;
+    this.candidateAIService = candidateAIService;
 }
 
 
@@ -212,11 +212,12 @@ return c;
         profileMap.put("summary", p != null ? p.getSummary() : "");
         profileMap.put("skills", p != null ? p.getSkills() : "");
         profileMap.put("resumeText", p != null ? p.getExperience() : "");
+        profileMap.put("jobDescription", job.getDescription());
         profileMap.put("email", candidate.getEmail());
         profileMap.put("phone", "");
 
-        Map<String, Object> yourModelResult =
-                resumeEnhancerService.analyze(profileMap);
+        Map<String, Object> aiResult =
+            candidateAIService.analyze(profileMap);
 
         CandidateMatchScore cms = candidateMatchScoreRepository
                 .findByJobDescriptionIdAndCandidateUserId(jobId, r.getCandidateUserId())
@@ -227,11 +228,11 @@ return c;
         cms.setScore(r.getScore());
         cms.setMatchedSkills(r.getMatchedSkills() == null ? "" : String.join(", ", r.getMatchedSkills()));
         cms.setRemarks(
-            (r.getRemarks() != null ? r.getRemarks() : "") +
-            " | Suggestions: " +
-            ((List<Map<String, Object>>) yourModelResult.get("suggestions"))
+        (r.getRemarks() != null ? r.getRemarks() : "") +
+        " | Suggestions: " +
+        ((List<Map<String, Object>>) aiResult.get("suggestions"))
             .stream()
-            .map(s -> s.get("label"))
+            .map(s -> s.get("text"))
             .toList()
         );
 
