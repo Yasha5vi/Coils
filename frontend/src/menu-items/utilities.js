@@ -1,5 +1,5 @@
 // assets
-import { IconTypography , IconPalette, IconShadow, IconWindmill, IconTimeline } from '@tabler/icons-react';
+import { IconTypography , IconPalette, IconShadow, IconWindmill, IconTimeline, IconSparkles } from '@tabler/icons-react';
 
 // constant
 const icons = {
@@ -7,7 +7,8 @@ const icons = {
   IconPalette,
   IconShadow,
   IconWindmill,
-  IconTimeline
+  IconTimeline,
+  IconSparkles
 };
 
 // ==============================|| UTILITIES MENU ITEMS ||============================== //
@@ -31,7 +32,7 @@ const utilities = {
       type: 'item',
       url: '/timeline',
       icon: icons.IconTimeline,
-      breadcrumbs: false
+      breadcrumbs: false 
     },
     {
     id: 'enhance',

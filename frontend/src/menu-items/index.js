@@ -24,17 +24,19 @@ const useMenuItems = () => {
   };
 
   const recruiterUtilities = {
-  ...utilities,
-  children: utilities.children.map((item) => {
-    if (item.id === 'util-typography') {
-      return { ...item, title: 'Post a Job', url: '/hr/jobs' };
-    }
-    if (item.id === 'util-color') {
-      return { ...item, title: 'Matches', url: '/hr/matches' };
-    }
-    return item;
-  })
-};
+    ...utilities,
+    children: utilities.children
+      .filter((item) => item.id !== 'enhance')
+      .map((item) => {
+        if (item.id === 'util-typography') {
+          return { ...item, title: 'Post a Job', url: '/hr/jobs' };
+        }
+        if (item.id === 'util-color') {
+          return { ...item, title: 'Matches', url: '/hr/matches' };
+        }
+        return item;
+      })
+  };
 
 
   const recruiterOther = {
