@@ -14,9 +14,8 @@ const Enhance = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          headline: "Sample headline",
-          summary: "Sample summary",
-          skills: "Java, React"
+          hresumeText: "I am a Java developer with Spring Boot experience and projects...",
+          jobDescription: "Looking for a backend developer with Java, Spring Boot, REST API"
         }),
       });
 
